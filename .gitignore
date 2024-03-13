@@ -12,3 +12,5 @@ server
 test_result/
 
 *.exe
+
+docs
