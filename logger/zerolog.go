@@ -2,8 +2,8 @@ package logger
 
 import (
 	"fmt"
-	"ngx/core/port"
-	"ngx/core/util"
+	"ngx/port"
+	"ngx/util"
 	"os"
 	"time"
 

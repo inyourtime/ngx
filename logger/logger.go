@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"ngx/core/port"
-	"ngx/core/util"
+	"ngx/port"
+	"ngx/util"
 )
 
 func NewLogger(config util.Config) port.Logger {

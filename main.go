@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"ngx/adapter/logger"
-	"ngx/core/util"
+	"ngx/logger"
+	"ngx/util"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
