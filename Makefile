@@ -1,4 +1,5 @@
 test:
+	mkdir -p test_result
 	go test ./... -cover -coverprofile=test_result/coverage.out
 	go tool cover -html=test_result/coverage.out -o test_result/cover.html
 build:
