@@ -7,7 +7,9 @@ run:
 	./server
 clean:
 	rm -f server
-swagger:
+check-swagger:
+	export PATH=$$(go env GOPATH)/bin:$$PATH && which swag || go install github.com/swaggo/swag/cmd/swag@latest
+genswag:
 	export PATH=$$(go env GOPATH)/bin:$$PATH && swag init
 # build-local:
 # 	docker build -t rw-fiber . 
