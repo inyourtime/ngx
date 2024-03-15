@@ -7,7 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func (server *Server) setupValidator() {
+func customValidator() *validator.Validate {
 	validator := validator.New()
 	validator.RegisterTagNameFunc(func(field reflect.StructField) string {
 		name := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
@@ -16,5 +16,5 @@ func (server *Server) setupValidator() {
 		}
 		return name
 	})
-	server.validator = validator
+	return validator
 }

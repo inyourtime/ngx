@@ -11,16 +11,18 @@ import (
 	_ "ngx/docs"
 )
 
-// @title Fiber Example API
+// @title Ngx API
 // @version 1.0
-// @description This is a sample swagger for Fiber
+// @description This is a swagger for Ngx
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.email fiber@swagger.io
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:5000
-// @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	config, err := util.LoadConfig(".env")
 	if err != nil {

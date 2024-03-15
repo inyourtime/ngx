@@ -12,6 +12,12 @@ check-swagger:
 	export PATH=$$(go env GOPATH)/bin:$$PATH && which swag || go install github.com/swaggo/swag/cmd/swag@latest
 genswag:
 	export PATH=$$(go env GOPATH)/bin:$$PATH && swag init
+
+# on MacOS please add export PATH=$(go env GOPATH)/bin:$PATH in your .zshrc file
+tools:
+	go install github.com/swaggo/swag/cmd/swag@latest
+	go install github.com/cosmtrek/air@latest
+
 # build-local:
 # 	docker build -t rw-fiber . 
 # build-dev:
