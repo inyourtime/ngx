@@ -29,9 +29,9 @@ func TestErrorHandler(t *testing.T) {
 		}
 
 		mock := MockRequest{}
-		validator := customValidator()
+		validator := NewValidator()
 
-		err := validator.Struct(&mock)
+		err := validator.Validate(&mock)
 
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
 		defer app.ReleaseCtx(c)
