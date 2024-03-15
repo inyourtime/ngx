@@ -5,6 +5,7 @@ import (
 	"log"
 	"ngx/handler/restful"
 	"ngx/logger"
+	"ngx/repository/sql/db"
 	"ngx/util"
 	"os"
 
@@ -32,6 +33,14 @@ func main() {
 
 	logger := logger.NewLogger(config)
 	logger.Info().Msg("This is a ngx project ✨")
+
+	database, err := db.New(config, logger)
+	if err != nil {
+		log.Fatal(err)
+	}
+	logger.Info().Msg("Connect Database successfully")
+
+	_ = database
 
 	server := restful.NewServer(config, logger, nil)
 
