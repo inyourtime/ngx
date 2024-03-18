@@ -1,20 +1,19 @@
 package db
 
 import (
-	"database/sql"
+	"ngx/domain"
 	"ngx/port"
 	"ngx/util"
 
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
-	"github.com/uptrace/bun/extra/bundebug"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Database struct {
 	config util.Config
 	logger port.Logger
-	bunDB  *bun.DB
+	gormDB *gorm.DB
 }
 
 func New(config util.Config, logger port.Logger) (*Database, error) {
@@ -24,7 +23,12 @@ func New(config util.Config, logger port.Logger) (*Database, error) {
 		logger: logger,
 	}
 
-	database.bunDB, err = database.connect()
+	database.gormDB, err = database.connect()
+	if err != nil {
+		return nil, err
+	}
+
+	err = database.autoMigrate()
 	if err != nil {
 		return nil, err
 	}
@@ -32,22 +36,23 @@ func New(config util.Config, logger port.Logger) (*Database, error) {
 	return database, nil
 }
 
-func (db *Database) DB() *bun.DB {
-	return db.bunDB
+func (db *Database) DB() *gorm.DB {
+	return db.gormDB
 }
 
-func (db *Database) connect() (*bun.DB, error) {
-	dsn := db.config.PostgresSource
-	pgdb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-
-	bunDB := bun.NewDB(pgdb, pgdialect.New())
-
-	bunDB.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
-
-	err := bunDB.Ping()
+func (db *Database) connect() (*gorm.DB, error) {
+	gdb, err := gorm.Open(postgres.Open(db.config.PostgresSource), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+		DryRun: false,
+		// TranslateError: true,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	return bunDB, nil
+	return gdb, nil
+}
+
+func (db *Database) autoMigrate() error {
+	return db.gormDB.AutoMigrate(&domain.User{})
 }
