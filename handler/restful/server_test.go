@@ -7,5 +7,5 @@ var (
 )
 
 func setup() {
-	e = NewRouter()
+	e = fiber.New()
 }

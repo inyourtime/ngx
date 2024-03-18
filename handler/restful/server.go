@@ -21,10 +21,8 @@ func NewServer(config util.Config, logger port.Logger, uc port.Usecase) port.Ser
 		usecase: uc,
 	}
 
-	app := NewRouter()
-	RegisterRoutes(app)
-
-	server.app = app
+	server.NewRouter()
+	server.RegisterRoutes()
 
 	return server
 }

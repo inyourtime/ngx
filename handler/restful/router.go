@@ -6,11 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func NewRouter() *fiber.App {
+func (server *Server) NewRouter() {
 	app := fiber.New()
 
 	app.Use(recover.New())
 	app.Use(cors.New(cors.ConfigDefault))
 
-	return app
+	server.app = app
 }

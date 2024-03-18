@@ -5,7 +5,9 @@ import (
 	"log"
 	"ngx/handler/restful"
 	"ngx/logger"
+	"ngx/repository/sql"
 	"ngx/repository/sql/db"
+	"ngx/usecase"
 	"ngx/util"
 	"os"
 
@@ -40,9 +42,13 @@ func main() {
 	}
 	logger.Info().Msg("Connect Database successfully")
 
-	_ = database
+	repo := sql.New(database.DB(), logger)
+	uc, err := usecase.New(config, repo, logger)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	server := restful.NewServer(config, logger, nil)
+	server := restful.NewServer(config, logger, uc)
 
 	log.Fatal(server.Start())
 }

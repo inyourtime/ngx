@@ -1,15 +1,19 @@
 package restful
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
-func RegisterRoutes(app *fiber.App) {
+func (server *Server) RegisterRoutes() {
 	validator := NewValidator()
 
+	app := server.app
+	uc := server.usecase
 	api := app.Group("/api")
 
 	NewSwaggerAPIHandler(api).Init()
 	NewAppAPIHandler(api).Init()
-	NewAuthAPIHandler(api, validator).Init()
+	NewAuthAPIHandler(api, validator, uc.Auth()).Init()
 	NewUserAPIHandler(api, validator).Init()
 
 	// Not found route handler
