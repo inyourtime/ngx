@@ -21,13 +21,13 @@ func (h *userAPIHandler) Init() {
 }
 
 // Me API
-// @Security ApiKeyAuth
-// @Summary      User account (me)
-// @Description  User account route
-// @Tags         user
-// @Produce      json
-// @Success      200
-// @Router       /api/users/me [GET]
+//	@Security		ApiKeyAuth
+//	@Summary		User account (me)
+//	@Description	User account route
+//	@Tags			user
+//	@Produce		json
+//	@Success		200
+//	@Router			/api/users/me [GET]
 func (h *userAPIHandler) Me(c *fiber.Ctx) error {
 	return c.SendString("me")
 }

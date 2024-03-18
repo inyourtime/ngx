@@ -30,13 +30,13 @@ func (h *authAPIHandler) Init() {
 }
 
 // Registration API
-// @Summary      Registration of user
-// @Description  Signup route
-// @Tags         auth
-// @Produce      json
-// @Param body body models.AuthSignUpRequest true "body"
-// @Success      200
-// @Router       /api/auth/signup [POST]
+//	@Summary		Registration of user
+//	@Description	Signup route
+//	@Tags			auth
+//	@Produce		json
+//	@Param			body	body	models.AuthSignUpRequest	true	"body"
+//	@Success		200
+//	@Router			/api/auth/signup [POST]
 func (h *authAPIHandler) AuthSignUp(c *fiber.Ctx) error {
 	req := models.AuthSignUpRequest{}
 
@@ -58,13 +58,13 @@ func (h *authAPIHandler) AuthSignUp(c *fiber.Ctx) error {
 }
 
 // Login API
-// @Summary      User login
-// @Description  Login route
-// @Tags         auth
-// @Produce      json
-// @Param body body models.AuthLoginRequest true "body"
-// @Success      200
-// @Router       /api/auth/login [POST]
+//	@Summary		User login
+//	@Description	Login route
+//	@Tags			auth
+//	@Produce		json
+//	@Param			body	body	models.AuthLoginRequest	true	"body"
+//	@Success		200
+//	@Router			/api/auth/login [POST]
 func (h *authAPIHandler) AuthLogin(c *fiber.Ctx) error {
 	return c.SendString("login")
 }

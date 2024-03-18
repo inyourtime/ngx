@@ -18,14 +18,14 @@ func (h *appAPIHandler) Init() {
 }
 
 // Root godoc
-// @Security ApiKeyAuth
-// @Summary      Root
-// @Description  Root route
-// @Tags         root
-// @Accept       json
-// @Produce      json
-// @Success      200
-// @Router       /api [get]
+//	@Security		ApiKeyAuth
+//	@Summary		Root
+//	@Description	Root route
+//	@Tags			root
+//	@Accept			json
+//	@Produce		json
+//	@Success		200
+//	@Router			/api [get]
 func (h *appAPIHandler) AppIndex(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Hello World from Root ✨"})
 }
