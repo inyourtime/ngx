@@ -18,6 +18,17 @@ type Exception struct {
 	Errors  Err    `json:"errors"`
 }
 
+// New creates and returns a new Exception with the specified kind, message, and error.
+//
+// Parameters:
+//
+//	kind: a string representing the type of exception.
+//	message: a string containing the message associated with the exception.
+//	err: an error type associated with the exception.
+//
+// Returns:
+//
+//	*Exception: a pointer to the newly created Exception.
 func New(kind, message string, err error) *Exception {
 	return &Exception{
 		Type:    kind,

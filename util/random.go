@@ -12,6 +12,10 @@ func init() {
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
+// RandomString generates a random string of length n using characters from the alphabet.
+//
+// n: the length of the random string to generate.
+// string: the randomly generated string.
 func RandomString(n int) string {
 	var builder strings.Builder
 	k := len(alphabet)
