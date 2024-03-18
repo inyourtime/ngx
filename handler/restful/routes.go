@@ -3,12 +3,14 @@ package restful
 import "github.com/gofiber/fiber/v2"
 
 func RegisterRoutes(app *fiber.App) {
-	_ = NewValidator()
+	validator := NewValidator()
 
 	api := app.Group("/api")
 
 	NewSwaggerAPIHandler(api).Init()
 	NewAppAPIHandler(api).Init()
+	NewAuthAPIHandler(api, validator).Init()
+	NewUserAPIHandler(api, validator).Init()
 
 	// Not found route handler
 	app.Use(NotFoundHandler)
