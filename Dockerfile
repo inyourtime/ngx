@@ -5,7 +5,7 @@ RUN go mod download
 RUN go mod verify
 RUN go build -o /go/bin/server .
 
-FROM alpine as runner
+FROM alpine AS runner
 COPY --from=builder /go/bin/server /app/server
 COPY --from=builder /go/src/app/.env /app
 
