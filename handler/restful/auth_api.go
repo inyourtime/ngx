@@ -2,6 +2,7 @@ package restful
 
 import (
 	"ngx/domain"
+	"ngx/models"
 	"ngx/port"
 
 	"github.com/gofiber/fiber/v2"
@@ -32,19 +33,22 @@ func (h *authAPIHandler) Init() {
 // @Summary      Registration of user
 // @Description  Signup route
 // @Tags         auth
-// @Accept       json
 // @Produce      json
 // @Param body body models.AuthSignUpRequest true "body"
 // @Success      200
 // @Router       /api/auth/signup [POST]
 func (h *authAPIHandler) AuthSignUp(c *fiber.Ctx) error {
-	name := "boat"
-	pwd := "1234"
+	req := models.AuthSignUpRequest{}
+
+	if err := h.validator.Bind(c, &req); err != nil {
+		return errorHandler(c, err)
+	}
+
 	user, err := h.authUc.SignUp(c.UserContext(), port.SignUpParams{
 		User: domain.User{
-			Email:    "test@gmail.com",
-			Name:     &name,
-			Password: &pwd,
+			Email:    req.Email,
+			Name:     req.Name,
+			Password: req.Password,
 		},
 	})
 	if err != nil {
@@ -57,7 +61,6 @@ func (h *authAPIHandler) AuthSignUp(c *fiber.Ctx) error {
 // @Summary      User login
 // @Description  Login route
 // @Tags         auth
-// @Accept       json
 // @Produce      json
 // @Param body body models.AuthLoginRequest true "body"
 // @Success      200

@@ -25,7 +25,6 @@ func (h *userAPIHandler) Init() {
 // @Summary      User account (me)
 // @Description  User account route
 // @Tags         user
-// @Accept       json
 // @Produce      json
 // @Success      200
 // @Router       /api/users/me [GET]

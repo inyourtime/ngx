@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
 )
 
 type Validator struct {
@@ -19,6 +20,13 @@ func NewValidator() *Validator {
 
 func (v *Validator) Validate(i interface{}) error {
 	return v.validator.Struct(i)
+}
+
+func (v *Validator) Bind(c *fiber.Ctx, i interface{}) error {
+	if err := c.BodyParser(i); err != nil {
+		return err
+	}
+	return v.Validate(i)
 }
 
 func customValidator() *validator.Validate {
