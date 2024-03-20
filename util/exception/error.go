@@ -7,6 +7,7 @@ const (
 	TypePermissionDenied = "ErrPermissionDenied"
 	TypeTokenExpired     = "TokenExpired"
 	TypeTokenInvalid     = "TokenInvalid"
+	TypeInvalidKey       = "ErrInvalidKey"
 )
 
 type Err = map[string][]string
