@@ -15,112 +15,82 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestAuthMiddleware_200_OK(t *testing.T) {
-	setup()
-	// TODO mock tokenMaker
-	secretKey := util.RandomString(32)
-	maker, err := token.NewJwtMaker(secretKey)
-	require.NoError(t, err)
+func TestAuthMiddleware(t *testing.T) {
+	cases := []struct {
+		name          string
+		isValidToken  bool
+		token         string
+		hasAuthHeader bool
+		respCode      int
+	}{
+		{
+			name:          "200 ok",
+			isValidToken:  true,
+			token:         "",
+			respCode:      http.StatusOK,
+			hasAuthHeader: true,
+		},
+		{
+			name:          "401 no authorization header",
+			isValidToken:  false,
+			token:         "",
+			respCode:      http.StatusUnauthorized,
+			hasAuthHeader: false,
+		},
+		{
+			name:          "401 invalid authorization header format",
+			isValidToken:  false,
+			token:         "foobar",
+			respCode:      http.StatusUnauthorized,
+			hasAuthHeader: true,
+		},
+		{
+			name:          "401 invalid authorization header type",
+			isValidToken:  false,
+			token:         "ApiKey foobar",
+			respCode:      http.StatusUnauthorized,
+			hasAuthHeader: true,
+		},
+		{
+			name:          "401 invalid token",
+			isValidToken:  false,
+			token:         "Bearer foobar",
+			respCode:      http.StatusUnauthorized,
+			hasAuthHeader: true,
+		},
+	}
 
-	token, _, err := maker.CreateToken(token.CreateTokenParams{
-		User:     domain.User{Model: gorm.Model{ID: 1}, Email: "test@email.com"},
-		Duration: time.Minute,
-	})
-	require.NoError(t, err)
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			setup()
+			// TODO mock tokenMaker
+			secretKey := util.RandomString(32)
+			maker, err := token.NewJwtMaker(secretKey)
+			require.NoError(t, err)
 
-	mw := NewMiddleware(maker)
+			mw := NewMiddleware(maker)
 
-	e.Get("/test", mw.AuthMiddleware(true), func(c *fiber.Ctx) error {
-		return c.SendString("ok")
-	})
+			e.Get("/test", mw.AuthMiddleware(true), func(c *fiber.Ctx) error {
+				return c.SendString("ok")
+			})
 
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
-	req.Header.Set("Authorization", "Bearer "+token)
+			if tc.isValidToken {
+				token, _, err := maker.CreateToken(token.CreateTokenParams{
+					User:     domain.User{Model: gorm.Model{ID: 1}, Email: "test@email.com"},
+					Duration: time.Minute,
+				})
+				require.NoError(t, err)
+				tc.token = "Bearer " + token
+			}
 
-	resp, err := e.Test(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-}
+			req := httptest.NewRequest(http.MethodGet, "/test", nil)
+			if tc.hasAuthHeader {
+				req.Header.Set("Authorization", tc.token)
+			}
 
-func TestAuthMiddleware_401_Unauthorized(t *testing.T) {
-	setup()
-	// TODO mock tokenMaker
-	secretKey := util.RandomString(32)
-	maker, err := token.NewJwtMaker(secretKey)
-	require.NoError(t, err)
-
-	mw := NewMiddleware(maker)
-
-	e.Get("/test", mw.AuthMiddleware(true), func(c *fiber.Ctx) error {
-		return c.SendString("ok")
-	})
-
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
-
-	resp, err := e.Test(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusUnauthorized, resp.StatusCode)
-}
-
-func TestAuthMiddleware_401_InvalidAuthorizationFormat(t *testing.T) {
-	setup()
-	// TODO mock tokenMaker
-	secretKey := util.RandomString(32)
-	maker, err := token.NewJwtMaker(secretKey)
-	require.NoError(t, err)
-
-	mw := NewMiddleware(maker)
-
-	e.Get("/test", mw.AuthMiddleware(true), func(c *fiber.Ctx) error {
-		return c.SendString("ok")
-	})
-
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
-	req.Header.Set("Authorization", "foobar")
-
-	resp, err := e.Test(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusUnauthorized, resp.StatusCode)
-}
-
-func TestAuthMiddleware_401_InvalidAuthorizationType(t *testing.T) {
-	setup()
-	// TODO mock tokenMaker
-	secretKey := util.RandomString(32)
-	maker, err := token.NewJwtMaker(secretKey)
-	require.NoError(t, err)
-
-	mw := NewMiddleware(maker)
-
-	e.Get("/test", mw.AuthMiddleware(true), func(c *fiber.Ctx) error {
-		return c.SendString("ok")
-	})
-
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
-	req.Header.Set("Authorization", "ApiKey foobar")
-
-	resp, err := e.Test(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusUnauthorized, resp.StatusCode)
-}
-
-func TestAuthMiddleware_401_InvalidToken(t *testing.T) {
-	setup()
-	// TODO mock tokenMaker
-	secretKey := util.RandomString(32)
-	maker, err := token.NewJwtMaker(secretKey)
-	require.NoError(t, err)
-
-	mw := NewMiddleware(maker)
-
-	e.Get("/test", mw.AuthMiddleware(true), func(c *fiber.Ctx) error {
-		return c.SendString("ok")
-	})
-
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
-	req.Header.Set("Authorization", "Bearer foobar")
-
-	resp, err := e.Test(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusUnauthorized, resp.StatusCode)
+			resp, err := e.Test(req)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.respCode, resp.StatusCode)
+		})
+	}
 }
