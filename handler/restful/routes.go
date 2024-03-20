@@ -9,12 +9,13 @@ func (server *Server) RegisterRoutes() {
 
 	app := server.app
 	uc := server.usecase
+	mw := NewMiddleware(uc.TokenMaker())
 	api := app.Group("/api")
 
 	NewSwaggerAPIHandler(api).Init()
 	NewAppAPIHandler(api).Init()
 	NewAuthAPIHandler(api, validator, uc.Auth()).Init()
-	NewUserAPIHandler(api, validator).Init()
+	NewUserAPIHandler(api, validator, mw).Init()
 
 	// Not found route handler
 	app.Use(NotFoundHandler)

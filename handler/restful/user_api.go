@@ -1,16 +1,22 @@
 package restful
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"ngx/port"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 type userAPIHandler struct {
 	router    fiber.Router
 	validator *Validator
+	mw        port.Middleware
 }
 
-func NewUserAPIHandler(router fiber.Router, v *Validator) *userAPIHandler {
+func NewUserAPIHandler(router fiber.Router, v *Validator, mw port.Middleware) *userAPIHandler {
 	return &userAPIHandler{
 		router:    router,
 		validator: v,
+		mw:        mw,
 	}
 }
 
@@ -21,6 +27,7 @@ func (h *userAPIHandler) Init() {
 }
 
 // Me API
+//
 //	@Security		ApiKeyAuth
 //	@Summary		User account (me)
 //	@Description	User account route

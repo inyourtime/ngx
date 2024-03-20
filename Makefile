@@ -1,6 +1,6 @@
 test:
 	mkdir -p test_result
-	go test ./... -cover -coverprofile=test_result/coverage.out
+	go test -cover -coverprofile=test_result/coverage.out -v ./... 2>&1 | sed 's/\(PASS\)/\x1b[32m\1\x1b[0m/g' | sed 's/\(FAIL\)/\x1b[31m\1\x1b[0m/g'
 	go tool cover -html=test_result/coverage.out -o test_result/cover.html
 build:
 	go build -o server .
