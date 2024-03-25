@@ -1,6 +1,11 @@
 package util
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/github"
+	"golang.org/x/oauth2/google"
+)
 
 const (
 	EnvProduction  = "production"
@@ -21,6 +26,16 @@ type Config struct {
 	TokenSymmetricKey string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 
 	TestRepo string `mapstructure:"TEST_REPO"`
+
+	GoogleClientID     string `mapstructure:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret string `mapstructure:"GOOGLE_CLIENT_SECRET"`
+	GoogleRedirectURL  string `mapstructure:"GOOGLE_REDIRECT_URL"`
+	GoogleUserInfoURL  string `mapstructure:"GOOGLE_USER_INFO_URL"`
+
+	GithubClientID     string `mapstructure:"GITHUB_CLIENT_ID"`
+	GithubClientSecret string `mapstructure:"GITHUB_CLIENT_SECRET"`
+	GithubRedirectURL  string `mapstructure:"GITHUB_REDIRECT_URL"`
+	GithubUserInfoURL  string `mapstructure:"GITHUB_USER_INFO_URL"`
 }
 
 func (c Config) IsProduction() bool {
@@ -29,6 +44,26 @@ func (c Config) IsProduction() bool {
 
 func (c Config) IsTestAllRepo() bool {
 	return c.TestRepo == "all"
+}
+
+func (c Config) GetGoogleCfg() *oauth2.Config {
+	return &oauth2.Config{
+		ClientID:     c.GoogleClientID,
+		ClientSecret: c.GoogleClientSecret,
+		RedirectURL:  c.GoogleRedirectURL,
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
+		Endpoint:     google.Endpoint,
+	}
+}
+
+func (c Config) GetGithubCfg() *oauth2.Config {
+	return &oauth2.Config{
+		ClientID:     c.GithubClientID,
+		ClientSecret: c.GithubClientSecret,
+		RedirectURL:  c.GithubRedirectURL,
+		Scopes:       []string{"user:email"},
+		Endpoint:     github.Endpoint,
+	}
 }
 
 func LoadConfig(path string) (config Config, err error) {
