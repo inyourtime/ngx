@@ -42,9 +42,9 @@ func (db *Database) DB() *gorm.DB {
 
 func (db *Database) connect() (*gorm.DB, error) {
 	gdb, err := gorm.Open(postgres.Open(db.config.PostgresSource), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-		DryRun: false,
-		// TranslateError: true,
+		Logger:         logger.Default.LogMode(logger.Silent),
+		DryRun:         false,
+		TranslateError: true,
 	})
 	if err != nil {
 		return nil, err

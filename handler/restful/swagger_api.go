@@ -21,7 +21,7 @@ func (h *swaggerAPIHandler) Init() {
 	router.Get("/docs/*", swagger.HandlerDefault) // default
 
 	// router.Get("/swagger/*", swagger.New(swagger.Config{ // custom
-	// 	URL:         "http://example.com/doc.json",
+	// 	URL:         "http://localhost:5000/api/docs/doc.json",
 	// 	DeepLinking: false,
 	// 	// Expand ("list") or Collapse ("none") tag groups by default
 	// 	DocExpansion: "none",
