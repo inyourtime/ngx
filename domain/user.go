@@ -37,6 +37,15 @@ type GoogleUserInfo struct {
 	VerifiedEmail bool   `json:"verified_email"`
 }
 
+// Type of Github user information
+type GithubUserInfo struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Verified bool   `json:"verified"`
+	Primary  bool   `json:"primary"`
+}
+
 // NewUser creates a new User based on the provided User argument.
 //
 // Parameter:

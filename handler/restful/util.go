@@ -66,7 +66,7 @@ func GetGithubUserInfo(endpoint string, access_token string) (*GitHubUser, error
 	return &info, nil
 }
 
-func GetGithubUserEmail(endpoint string, access_token string) (*[]GithubUserEmail, error) {
+func GetGithubUserEmail(endpoint string, access_token string) (*GithubUserEmail, error) {
 	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,14 @@ func GetGithubUserEmail(endpoint string, access_token string) (*[]GithubUserEmai
 		return nil, err
 	}
 
-	return &info, nil
+	primaryEmail := []GithubUserEmail{}
+	for _, email := range info {
+		if email.Primary {
+			primaryEmail = append(primaryEmail, email)
+		}
+	}
+
+	return &primaryEmail[0], nil
 }
 
 func GenerateState() (string, error) {

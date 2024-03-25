@@ -6,6 +6,7 @@ import (
 	"ngx/port"
 	"ngx/util"
 	"ngx/util/exception"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -214,8 +215,12 @@ func (h *authAPIHandler) GithubCallback(c *fiber.Ctx) error {
 		return errorHandler(c, err)
 	}
 
-	return c.JSON(fiber.Map{
-		"email": userEmail,
-		"user":  userData,
-	})
+	githubInfo := &domain.GithubUserInfo{
+		ID:       strconv.Itoa(userData.ID),
+		Name:     userData.Name,
+		Email:    userEmail.Email,
+		Verified: userEmail.Verified,
+		Primary:  userEmail.Primary,
+	}
+	return c.JSON(githubInfo)
 }
